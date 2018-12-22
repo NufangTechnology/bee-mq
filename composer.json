@@ -1,0 +1,27 @@
+{
+    "name": "bee-framework/mq",
+    "description": "Bee框架MQ组件",
+    "require": {
+        "php": "^7.1",
+        "ext-swoole": "^4.0",
+        "ext-amqp": "*",
+        "bee-framework/util": "^1.0",
+        "bee-framework/process": "^1.0",
+        "bee-framework/serialize": "^1.0"
+    },
+    "require-dev": {
+        "phalcon/ide-stubs": "*",
+        "eaglewu/swoole-ide-helper": "master-dev",
+        "phpunit/phpunit": "^7.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Bee\\Mq\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Bee\\Mq\\Test\\": "tests/"
+        }
+    }
+}
