@@ -206,25 +206,28 @@ abstract class Rabbit extends Worker implements ConsumerInterface
             $qu->declareQueue();
             $qu->bind($this->exchange, $this->route);
             // 开始接收消息
-            $qu->consume(
-                function (\AMQPEnvelope $envelope, \AMQPQueue $queue) {
-                    // 已处理任务达到最大数
-                    // 退出当前进程（主进程会自动拉起新进程）
-                    if ($this->count >= $this->maximum) {
-                        $this->workerExit();
-                    }
-                    // 已处理数加1
-                    $this->count++;
+            while (true) {
+                $qu->consume(
+                    function (\AMQPEnvelope $envelope, \AMQPQueue $queue) {
+                        // 已处理任务达到最大数
+                        // 退出当前进程（主进程会自动拉起新进程）
+                        if ($this->count >= $this->maximum) {
+                            $this->workerExit();
+                        }
+                        // 已处理数加1
+                        $this->count++;
 
-                    // 标记进程为执行中
-                    $this->idle = false;
-                    // 消费业务处理
-                    $this->consume($envelope, $queue);
-                    // 标记进程未空闲
-                    $this->idle = true;
-                    // 检查主进程
-                    $this->checkMaster();
-                });
+                        // 标记进程为执行中
+                        $this->idle = false;
+                        // 消费业务处理
+                        $this->consume($envelope, $queue);
+                        // 标记进程未空闲
+                        $this->idle = true;
+                        // 检查主进程
+                        $this->checkMaster();
+                    });
+            }
+
         } catch (\Throwable $e) {
             $this->exception($e);
         }
